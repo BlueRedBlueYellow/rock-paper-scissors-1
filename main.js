@@ -91,7 +91,6 @@ function playRound(event) {
   }
 
   showResults(playerSelection, computerSelection, playerWin)
-  showRoundMessage(playerWin);
 }
 
 function endMessage() {

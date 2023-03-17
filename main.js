@@ -49,80 +49,49 @@ function resetColor() {
   }
 }
 
-function roundWinMessage() {
+function showResults(playerSelection, computerSelection, playerWin) {
+  playerSelection = document.querySelector("#" + playerSelection);
+  computerSelection = document.querySelector("#cpu-" + computerSelection); 
   roundMessage.style.visibility = "visible";
-  roundMessage.textContent = "You WIN this round! :)";
-}
 
-function roundLoseMessage() {
-  roundMessage.style.visibility = "visible";
-  roundMessage.textContent = "Sorry, you LOSE this round! :(";
-}
-
-function roundTieMessage() {
-  roundMessage.style.visibility = "visible";
-  roundMessage.textContent = "It's a TIE!";
+  if (playerWin === "tie") {
+    roundMessage.textContent = "It's a TIE!";
+    playerSelection.style.backgroundColor = "gray";
+    computerSelection.style.backgroundColor = "gray";
+  } else if (playerWin) {
+    roundMessage.textContent = "You WIN this round! :)";
+    playerSelection.style.backgroundColor = "yellowGreen";
+    computerSelection.style.backgroundColor = "crimson"; 
+  } else {
+    roundMessage.textContent = "Sorry, you LOSE this round! :(";
+    playerSelection.style.backgroundColor = "crimson";
+    computerSelection.style.backgroundColor = "yellowGreen"; 
+  }
 }
 
 function playRound(event) {
-  computerSelection = getComputerChoice();
-  playerSelection = "";
-  playerSelection += event.currentTarget.id;
+  let computerSelection = getComputerChoice();
+  let playerSelection = event.currentTarget.id;
+  let playerWin = false;
 
-  if (playerSelection === "paper" && computerSelection === "rock") {
-    resetColor();
-    paper.style.backgroundColor = "yellowGreen";
-    cpuRock.style.backgroundColor = "crimson";
-    roundWinMessage();
+  const winningCombinations = (
+    playerSelection === "paper" && computerSelection === "rock" || 
+    playerSelection === "rock" && computerSelection === "scissors" || 
+    playerSelection === "scissors" && computerSelection === "paper"
+  );
+
+  resetColor();
+  if (winningCombinations) {
     playerScoreNum.textContent++;
-
-  } else if (playerSelection === "rock" && computerSelection === "scissors") {
-    resetColor();
-    rock.style.backgroundColor = "yellowGreen";
-    cpuScissors.style.backgroundColor = "crimson";
-    roundWinMessage();
-    playerScoreNum.textContent++;
-
-  } else if (playerSelection === "scissors" && computerSelection === "paper") {
-    resetColor();
-    scissors.style.backgroundColor = "yellowGreen";
-    cpuPaper.style.backgroundColor = "crimson";
-    roundWinMessage();
-    playerScoreNum.textContent++;
-
-  } else if (playerSelection === "rock" && computerSelection === "paper") {
-    resetColor();
-    rock.style.backgroundColor = "crimson";
-    cpuPaper.style.backgroundColor = "yellowGreen";
-    roundLoseMessage();
-    cpuScoreNum.textContent++;
-
-  } else if (playerSelection === "paper" && computerSelection === "scissors") {
-    resetColor();
-    paper.style.backgroundColor = "crimson";
-    cpuScissors.style.backgroundColor = "yellowGreen";
-    roundLoseMessage();
-    cpuScoreNum.textContent++;
-
-  } else if (playerSelection === "scissors" && computerSelection === "rock") {
-    resetColor();
-    scissors.style.backgroundColor = "crimson";
-    cpuRock.style.backgroundColor = "yellowGreen";
-    roundLoseMessage();
-    cpuScoreNum.textContent++;
-
+    playerWin = true;
   } else if (playerSelection === computerSelection) {
-    resetColor();
-    event.currentTarget.style.backgroundColor = "gray";
-    if (event.currentTarget.id === "paper") {
-      cpuPaper.style.backgroundColor = "gray";
-    } else if (event.currentTarget.id === "scissors") {
-      cpuScissors.style.backgroundColor = "gray";
-    } else if (event.currentTarget.id === "rock") {
-      cpuRock.style.backgroundColor = "gray";
-    }
-    roundTieMessage();
+    playerWin = "tie";
+  } else {
+    cpuScoreNum.textContent++;
   }
+
+  showResults(playerSelection, computerSelection, playerWin)
+  showRoundMessage(playerWin);
 }
 
 function endMessage() {
